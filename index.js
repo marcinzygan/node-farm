@@ -34,6 +34,8 @@ const url = require("url");
 // console.log("This will log first !");
 
 ///////////////////////// SERVER //////////////////////////////
+const API = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+
 const server = http.createServer((req, res) => {
   console.log(req.url);
   const pathName = req.url;
@@ -41,6 +43,11 @@ const server = http.createServer((req, res) => {
     res.end("HOME PAGE");
   } else if (pathName === "/about") {
     res.end("ABOUT PAGE");
+  } else if (pathName === "/api") {
+    res.writeHead(200, {
+      "Content-type": "application/json",
+    });
+    res.end(API);
   } else {
     res.writeHead(404, {
       "Content-type": "text/html",
