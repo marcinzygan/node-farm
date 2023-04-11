@@ -1,6 +1,7 @@
 const { log } = require("console");
 const fs = require("fs");
 const http = require("http");
+const url = require("url");
 
 /////////////////////////////// FILES SYNC //////////////////////////////////////////////////////////
 
@@ -34,7 +35,18 @@ const http = require("http");
 
 ///////////////////////// SERVER //////////////////////////////
 const server = http.createServer((req, res) => {
-  res.end("Hello from the server");
+  console.log(req.url);
+  const pathName = req.url;
+  if (pathName === "/" || pathName === "/home") {
+    res.end("HOME PAGE");
+  } else if (pathName === "/about") {
+    res.end("ABOUT PAGE");
+  } else {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+    });
+    res.end("<h1>404 PAGE</h1>");
+  }
 });
 server.listen(8000, "127.0.0.1", () => {
   console.log("lISTENING FOR REQ ON PORT 8000");
