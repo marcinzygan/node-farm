@@ -58,7 +58,7 @@ const templateCard = fs.readFileSync(
   `${__dirname}/templates/template-card.html`,
   "utf-8"
 );
-console.log(templateCard);
+
 const templateOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8"
@@ -70,9 +70,12 @@ const templateProduct = fs.readFileSync(
 
 const server = http.createServer((req, res) => {
   console.log(req.url);
-  const pathName = req.url;
+
+  const { query, pathname } = url.parse(req.url, true);
+  console.log(url.parse(req.url, true));
+  console.log(query.id);
   // OVERVIEW PAGE
-  if (pathName === "/" || pathName === "/overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
@@ -85,10 +88,17 @@ const server = http.createServer((req, res) => {
 
     res.end(pageHtml);
     // PRODUCT PAGE
-  } else if (pathName === "/product") {
-    res.end("PRODUCT PAGE");
+  } else if (pathname === "/product") {
+    const product = dataObject.find((el) => el.id === Number(query.id));
+    const productHtml = replaceTEmplate(templateProduct, product);
+    console.log(product);
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+
+    res.end(productHtml);
     // API
-  } else if (pathName === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
