@@ -34,20 +34,66 @@ const url = require("url");
 // console.log("This will log first !");
 
 ///////////////////////// SERVER //////////////////////////////
-const API = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+
+// FUNCTION TO REPLACE TEMPLATE PLACEHOLDERS
+const replaceTEmplate = function (temp, product) {
+  let output = temp.replace(/{%PRODUCT_NAME%}/g, product.productName);
+  output = output.replace(/{%ORIGIN%}/g, product.from);
+  output = output.replace(/{%PRODUCT_NUTRIENTS_NAME%}/g, product.nutrients);
+  output = output.replace(/{%IMAGE%}/g, product.image);
+  output = output.replace(/{%QUANTITY%}/g, product.quantity);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%ID%}/g, product.id);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+
+  if (!product.organic) {
+    output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
+  }
+  return output;
+};
+
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+const dataObject = JSON.parse(data);
+const templateCard = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  "utf-8"
+);
+console.log(templateCard);
+const templateOverview = fs.readFileSync(
+  `${__dirname}/templates/template-overview.html`,
+  "utf-8"
+);
+const templateProduct = fs.readFileSync(
+  `${__dirname}/templates/template-product.html`,
+  "utf-8"
+);
 
 const server = http.createServer((req, res) => {
   console.log(req.url);
   const pathName = req.url;
-  if (pathName === "/" || pathName === "/home") {
-    res.end("HOME PAGE");
-  } else if (pathName === "/about") {
-    res.end("ABOUT PAGE");
+  // OVERVIEW PAGE
+  if (pathName === "/" || pathName === "/overview") {
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+
+    //map over data
+    const cardsHtml = dataObject
+      .map((product) => replaceTEmplate(templateCard, product))
+      .join("");
+    const pageHtml = templateOverview.replace(/{%PRODUCT_CARDS%}/g, cardsHtml);
+
+    res.end(pageHtml);
+    // PRODUCT PAGE
+  } else if (pathName === "/product") {
+    res.end("PRODUCT PAGE");
+    // API
   } else if (pathName === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
-    res.end(API);
+    res.end(data);
+    // NOT FOUND PAGR
   } else {
     res.writeHead(404, {
       "Content-type": "text/html",
