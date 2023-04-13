@@ -1,0 +1,25 @@
+{
+  "name": "node-farm",
+  "version": "1.0.0",
+  "description": "node.js lessons",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcinzygan/node-farm.git"
+  },
+  "author": "marcinzygan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcinzygan/node-farm/issues"
+  },
+  "homepage": "https://github.com/marcinzygan/node-farm#readme",
+  "dependencies": {
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
